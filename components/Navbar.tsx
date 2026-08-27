@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 const branches = [
   { id: "cse", name: "CSE" },
@@ -15,6 +16,13 @@ const branches = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [branchesOpen, setBranchesOpen] = useState(false);
+  const { user, logOut } = useAuth();
+
+  const handleLogout = async () => {
+    await logOut();
+    setMobileOpen(false);
+    setBranchesOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
@@ -60,15 +68,42 @@ export default function Navbar() {
             Contact
           </Link>
 
-          {/* 🌙 Theme Toggle - Desktop */}
           <ThemeToggle />
 
-          <Link href="/login" className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors shadow-sm">
-            Login / Register
-          </Link>
+          {/* 👇 LOGIN STATE KE HISAAB SE */}
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/dashboard"
+                className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
+              >
+                Dashboard
+              </Link>
+              {user.photoURL && (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName ?? "User"}
+                  className="w-8 h-8 rounded-full border-2 border-teal-500"
+                />
+              )}
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors shadow-sm cursor-pointer"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors shadow-sm"
+            >
+              Login / Register
+            </Link>
+          )}
         </nav>
 
-        {/* Mobile: Theme Toggle + Hamburger (dono hamesha visible) */}
+        {/* Mobile: Toggle + Hamburger */}
         <div className="flex md:hidden items-center gap-2">
           <ThemeToggle />
           <button
@@ -116,13 +151,31 @@ export default function Navbar() {
             Contact
           </Link>
 
-          <Link
-            href="/login"
-            onClick={() => setMobileOpen(false)}
-            className="block text-center px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Login / Register
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="block text-center px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors"
+              >
+                Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full text-center px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors cursor-pointer"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              className="block text-center px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Login / Register
+            </Link>
+          )}
         </nav>
       )}
     </header>
