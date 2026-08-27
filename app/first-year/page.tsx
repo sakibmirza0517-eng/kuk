@@ -1,69 +1,92 @@
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
 
 export default function FirstYearPage() {
   const semestersData = [
-    {
-      id: "sem1",
-      name: "Semester 1",
-      description: "English, Math-1, PPS, SP, UHV",
-    },
-    {
-      id: "sem2",
-      name: "Semester 2",
-      description: "BEEE, Biology, Chemistry, EGD, Math-2",
-    },
+    { id: "sem1", name: "Semester 1", description: "English, Math-1, PPS, SP, UHV" },
+    { id: "sem2", name: "Semester 2", description: "BEEE, Biology, Chemistry, EGD, Math-2" },
   ];
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-12 px-4">
+    <main className="min-h-screen w-full bg-white dark:bg-slate-950 flex flex-col overflow-x-hidden">
+      {/* ===== HEADER ===== */}
+      <section className="relative py-12 md:py-16 px-4 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-5xl mx-auto">
-          <Link href="/cse" className="inline-flex items-center text-sm mb-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Link
+            href="/cse"
+            style={{ animation: "fadeUp .5s ease-out both" }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-all mb-6"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to CSE
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold">First Year</h1>
-          <p className="text-teal-100 mt-2 text-lg">Select Your Semester</p>
+
+          <h1
+            style={{ animation: "fadeUp .6s ease-out both", animationDelay: "0.1s" }}
+            className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            First <span className="text-teal-600 dark:text-teal-400">Year</span>
+          </h1>
+          <p
+            style={{ animation: "fadeUp .6s ease-out both", animationDelay: "0.2s" }}
+            className="text-slate-600 dark:text-slate-400 mt-3 text-base md:text-lg"
+          >
+            Select Your Semester — subjects ke hisaab se resources.
+          </p>
         </div>
       </section>
 
-      {/* Semesters Grid */}
-      <section className="py-16 px-4">
+      {/* ===== SEMESTERS GRID ===== */}
+      <section className="py-12 md:py-20 px-4 flex-grow">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {semestersData.map((sem) => (
-              <Link
-                key={sem.id}
-                href={`/semester/${sem.id}`}
-                className="block bg-white p-8 rounded-2xl border-2 border-teal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-64 flex flex-col justify-center"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-3xl font-bold text-slate-900 hover:text-teal-700 transition-colors">
-                    {sem.name}
-                  </h3>
-                  <svg className="w-10 h-10 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <p className="text-slate-600 text-lg mb-6">{sem.description}</p>
-                <span className="inline-flex items-center text-teal-600 font-semibold text-lg">
-                  View Subjects
-                  <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {semestersData.map((sem, i) => (
+              <Reveal key={sem.id} delay={i * 120} className="h-full">
+                <Link
+                  href={`/semester/${sem.id}`}
+                  className="group block bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-teal-500 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{sem.name}</h3>
+                    <div className="w-10 h-10 rounded-lg bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center group-hover:bg-teal-600 transition-colors">
+                      <svg className="w-5 h-5 text-teal-600 dark:text-teal-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Subject chips */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {sem.description.split(", ").map((subject) => (
+                      <span
+                        key={subject}
+                        className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium"
+                      >
+                        {subject}
+                      </span>
+                    ))}
+                  </div>
+
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold group-hover:bg-teal-600 group-hover:text-white transition-all">
+                    View Subjects
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-8 px-4 text-center">
-        <p>&copy; {new Date().getFullYear()} KUK Tech Notes</p>
+      {/* ===== FOOTER ===== */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-8 px-4 text-center">
+        <p className="text-sm text-slate-500">
+          &copy; {new Date().getFullYear()} KUK Tech Notes — Built by Sakib.
+        </p>
       </footer>
     </main>
   );

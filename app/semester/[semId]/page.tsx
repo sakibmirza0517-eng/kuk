@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import Reveal from "@/components/Reveal";
 
-// ✅ REAL GOOGLE DRIVE LINKS - SAB DAAL DIYE
+// ✅ TUMHARE REAL GOOGLE DRIVE LINKS — SAME KE SAME
 const subjectsData = {
   sem1: [
     {
@@ -119,104 +119,116 @@ export default function SemesterPage({ params }: { params: Promise<{ semId: stri
   const router = useRouter();
   const { semId } = use(params);
 
-  // ✅ FIX: Redirect ab useEffect mein (render ke andar NAHI)
+  // ✅ Redirect useEffect mein (render ke andar NAHI)
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
   }, [loading, user, router]);
 
-  // Loading state
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
       </main>
     );
   }
 
-  // Not logged in (useEffect will redirect)
   if (!user) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <main className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
         <p className="text-xl text-slate-600 dark:text-slate-400">Please login to access notes...</p>
       </main>
     );
   }
 
-  const subjects = subjectsData[semId as keyof typeof subjectsData];
+  const subjects = subjectsData[semId as keyof typeof subjectsData] || subjectsData.sem1;
   const semesterName = semId === "sem1" ? "Semester 1" : "Semester 2";
 
   return (
-    <main className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 pb-16 overflow-x-hidden">
-      {/* Header */}
-      <header className="w-full bg-gradient-to-r from-teal-600 to-teal-700 dark:from-teal-700 dark:to-teal-900 text-white py-10 md:py-12 px-4 shadow-lg">
+    <main className="min-h-screen w-full bg-white dark:bg-slate-950 flex flex-col overflow-x-hidden">
+      {/* ===== HEADER ===== */}
+      <section className="relative py-12 md:py-16 px-4 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto">
-          <Link href="/first-year" className="inline-flex items-center text-sm mb-3 md:mb-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Link
+            href="/first-year"
+            style={{ animation: "fadeUp .5s ease-out both" }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-all mb-6"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to First Year
           </Link>
-          <h1 className="text-3xl md:text-5xl font-bold">{semesterName} Subjects</h1>
-          <p className="text-teal-100 mt-2 text-base md:text-lg">Select a subject to download resources</p>
-        </div>
-      </header>
 
-      {/* Subjects Grid */}
-      <section className="max-w-6xl mx-auto px-3 md:px-4 py-10 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {subjects.map((subject) => (
-            <div
-              key={subject.id}
-              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 p-5 md:p-6 flex flex-col"
-            >
-              <div className="mb-4 md:mb-6">
-                <span className="inline-block px-3 py-1 text-xs font-bold rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 mb-3">
-                  {subject.code}
-                </span>
-                <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
-                  {subject.name}
-                </h2>
-              </div>
-
-              <div className="mt-auto space-y-2.5 md:space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <a
-                  href={subject.links.notes}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:border-teal-300 dark:hover:border-teal-700 hover:text-teal-700 dark:hover:text-teal-400 transition-all"
-                >
-                  <span>📝 Handwritten Notes</span>
-                  <span className="text-slate-400 dark:text-slate-500">↗</span>
-                </a>
-                <a
-                  href={subject.links.syllabus}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:border-teal-300 dark:hover:border-teal-700 hover:text-teal-700 dark:hover:text-teal-400 transition-all"
-                >
-                  <span>📋 Syllabus Copy</span>
-                  <span className="text-slate-400 dark:text-slate-500">↗</span>
-                </a>
-                <a
-                  href={subject.links.pyqs}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:border-teal-300 dark:hover:border-teal-700 hover:text-teal-700 dark:hover:text-teal-400 transition-all"
-                >
-                  <span>📄 Previous Year Papers</span>
-                  <span className="text-slate-400 dark:text-slate-500">↗</span>
-                </a>
-              </div>
-            </div>
-          ))}
+          <h1
+            style={{ animation: "fadeUp .6s ease-out both", animationDelay: "0.1s" }}
+            className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            {semesterName} <span className="text-teal-600 dark:text-teal-400">Subjects</span>
+          </h1>
+          <p
+            style={{ animation: "fadeUp .6s ease-out both", animationDelay: "0.2s" }}
+            className="text-slate-600 dark:text-slate-400 mt-3 text-base md:text-lg"
+          >
+            Select a subject to download resources • Logged in as {user.displayName || user.email}
+          </p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="w-full bg-slate-900 dark:bg-black text-slate-400 py-6 md:py-8 px-4 text-center">
-        <p className="text-sm md:text-base">&copy; {new Date().getFullYear()} KUK Tech Notes</p>
+      {/* ===== SUBJECTS GRID ===== */}
+      <section className="py-12 md:py-20 px-4 flex-grow">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {subjects.map((subject, i) => (
+              <Reveal key={subject.id} delay={i * 100} className="h-full">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 h-full flex flex-col hover:border-teal-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <span className="inline-block w-fit px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 text-xs font-bold mb-3">
+                    {subject.code}
+                  </span>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-5">{subject.name}</h3>
+
+                  <div className="mt-auto space-y-2.5">
+                    <a
+                      href={subject.links.notes}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-all"
+                    >
+                      <span>📝 Handwritten Notes</span>
+                      <span>↗</span>
+                    </a>
+                    <a
+                      href={subject.links.syllabus}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-all"
+                    >
+                      <span>📋 Syllabus Copy</span>
+                      <span>↗</span>
+                    </a>
+                    <a
+                      href={subject.links.pyqs}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-all"
+                    >
+                      <span>📄 Previous Year Papers</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FOOTER ===== */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-8 px-4 text-center">
+        <p className="text-sm text-slate-500">
+          &copy; {new Date().getFullYear()} KUK Tech Notes — built by Sakib.
+        </p>
       </footer>
     </main>
   );
