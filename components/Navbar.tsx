@@ -5,6 +5,8 @@ import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
 
+const ADMIN_EMAIL = "sakibfatih107@gmail.com";
+
 const branches = [
   { id: "cse", name: "CSE" },
   { id: "mechanical", name: "ME" },
@@ -18,6 +20,8 @@ export default function Navbar() {
   const [branchesOpen, setBranchesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, logOut } = useAuth();
+
+  const isAdmin = user?.email === ADMIN_EMAIL;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -46,7 +50,7 @@ export default function Navbar() {
           <span className="text-lg font-bold text-slate-900 dark:text-white">KUK Tech Notes</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden md:flex items-center gap-6">
           <Link href="/" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
 
           <div className="relative">
@@ -72,13 +76,20 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3">
               <Link href="/dashboard" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Dashboard</Link>
+
+              {isAdmin && (
+                <Link href="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/40 border border-teal-200 dark:border-teal-800 text-sm font-semibold text-teal-700 dark:text-teal-300 hover:bg-teal-100 transition-colors">
+                  🛡️ Admin
+                </Link>
+              )}
+
               {user.photoURL && <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full border-2 border-teal-500" />}
               <button onClick={handleLogout} className="px-4 py-2 rounded-full border-2 border-slate-900 dark:border-white text-sm font-semibold text-slate-900 dark:text-white hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all cursor-pointer">
                 Logout
               </button>
             </div>
           ) : (
-            <Link href="/login" className="px-5 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hover:-translate-y-0.5">
+            <Link href="/login" className="px-5 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:bg-slate-800 transition-all hover:-translate-y-0.5">
               Get Started
             </Link>
           )}
@@ -107,9 +118,15 @@ export default function Navbar() {
             ))}
           </div>
           <Link href="/contact" onClick={() => setMobileOpen(false)} className="block font-medium text-slate-700 dark:text-slate-300">Contact</Link>
+
           {user ? (
             <>
               <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="block text-center px-4 py-2.5 rounded-full bg-teal-600 text-white font-semibold">Dashboard</Link>
+              {isAdmin && (
+                <Link href="/admin" onClick={() => setMobileOpen(false)} className="block text-center px-4 py-2.5 rounded-full bg-teal-50 dark:bg-teal-900/40 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 font-semibold">
+                  🛡️ Admin Panel
+                </Link>
+              )}
               <button onClick={handleLogout} className="w-full text-center px-4 py-2.5 rounded-full border-2 border-slate-900 dark:border-white font-semibold text-slate-900 dark:text-white cursor-pointer">Logout</button>
             </>
           ) : (

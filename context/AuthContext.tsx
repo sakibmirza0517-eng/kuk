@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { ref as dbRef, update } from "firebase/database";
+import { auth, googleProvider, database } from "@/lib/firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -21,6 +22,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+
+      // 👇 USER TRACKING — har logged-in user database mein save hoga
+      if (currentUser) {
+        update(dbRef(database, `users/${currentUser.uid}`), {
+          uid: currentUser.uid,
+          name: currentUser.displayName || "Unknown",
+          email: currentUser.email || "",
+          photo: currentUser.photoURL || "",
+          lastActive: Date.now(),
+        }).catch((err) => console.error("User tracking failed:", err));
+      }
     });
     return () => unsubscribe();
   }, []);
